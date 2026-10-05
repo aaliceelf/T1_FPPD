@@ -21,18 +21,29 @@ func Philosopher(id, iteration int) {
 	fmt.Printf(" T%d\n", iteration) // Thinking
 	time.Sleep(time.Duration(time_to_think) * time.Second)
 
-	// eat
+	//medição de tempo
+	inicio := time.Now()
 
+	// eat
 	for s := 1; s <= id*6; s++ {
 		fmt.Printf(" ")
 	}
+	eatingNow ++
+	espera := time.Since(inicio)
 	fmt.Printf(" E%d\n", iteration) // Eating
+	ciclesPhilosophers[id] ++
 	time.Sleep(time.Duration(time_to_eat) * time.Second)
 }
 
 func main() {
 	philosophers := 5
 	rounds := 20 //20 (cada filósofo executar 20 ciclos)
+	ciclesPhilosophers int := make([]int, philosophers)
+	mean int
+	maxEating int
+	longestWait int
+	eatingNow int
+
 
 	fmt.Printf("\n[P1] [P2] [P3] [P4] [P5]\n")
 
@@ -46,6 +57,16 @@ func main() {
 		}
 	}
 	elapsed := time.Since(start)
+
+	mean = rounds * philosophers * (time_to_think + time_to_eat)
+
+	for i := 0; i < len(ciclesPhilosophers); i++ {
+		printf(cilesPhilosophers[i])
+	}
+
+	printf(mean)
+	printf(maxEating)
+	printf(longestWait)
 
 	fmt.Printf("\nSequential Dinner took %s\n\n", elapsed)
 }
