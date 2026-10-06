@@ -51,9 +51,9 @@ func Philosopher(id, iteration int) {
 		fmt.Printf(" ")
 	}
 
-	eatingNow--
-
 	fmt.Printf(" E%d\n", iteration) // Eating
+
+	eatingNow--
 
 	ciclesPhilosophers[id]++
 
