@@ -18,6 +18,10 @@ var garfos [numFilosofos]sync.Mutex
 var mesa sync.Mutex
 var somaEspera [numFilosofos]time.Duration
 var maiorEspera [numFilosofos]time.Duration
+var ciclosConcluidos [numFilosofos]int
+var mutexContador sync.Mutex
+var comendoAgora int
+var maxComendo int
 
 func filosofo(id int, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -48,9 +52,20 @@ func filosofo(id int, wg *sync.WaitGroup) {
 			maiorEspera[id] = espera
 		}
 
+		mutexContador.Lock()
+		comendoAgora ++
+		if comendoAgora > maxComendo {
+			maxComendo = comendoAgora
+		}
+		mutexContador.Unlock()
+
 		// 4. comer
 		fmt.Printf("Filósofo %d está comendo\n", id)
 		time.Sleep(tempoComer)
+
+		mutexContador.Lock()
+		comendoAgora --
+		mutexContador.Unlock()
 	
 		// 5. soltar os dois garfos
 		garfos[esq].Unlock()
@@ -59,6 +74,7 @@ func filosofo(id int, wg *sync.WaitGroup) {
 		fmt.Printf("Filósofo %d soltou o garfo %d\n", id, dir)
 
 		mesa.Unlock()
+		ciclosConcluidos[id]++
 	}
 }
 
@@ -71,6 +87,11 @@ func main() {
 	}
 	wg.Wait()
 	elapsed := time.Since(start)
+
+	for i := 0; i < numFilosofos; i++ {
+		fmt.Printf("Filósofo %d: %d ciclos\n", i, ciclosConcluidos[i])
+	}
+
 	fmt.Printf("Tempo: %s\n", elapsed)
 
 	var total time.Duration
@@ -86,5 +107,6 @@ func main() {
 	media := total / time.Duration(numFilosofos*numCiclos)
 	fmt.Printf("Espera média: %s\n", media)
 	fmt.Printf("Maior espera: %s\n", maior)
+	fmt.Printf("Máximo comendo simultaneamente: %d\n", maxComendo)
 
 }
