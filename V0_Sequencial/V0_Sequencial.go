@@ -16,7 +16,7 @@ const (
 	tempoComer   = 150 * time.Millisecond
 )
 
-var ciclesnumFilosofos = make([]int, numFilosofos) //número de ciclos concluídos por cada filósofo
+var ciclosConcluidos [numFilosofos]int
 var eatingNow int
 var somaEspera time.Duration //quanto foi esperado ao todo
 var longestWait time.Duration
@@ -63,7 +63,11 @@ func Filosofo(id, iteration int) {
 	//aqui será a liberação dos garfos
 	eatingNow--
 
-	ciclesnumFilosofos[id]++
+	ciclosConcluidos[id]++
+}
+
+func ms(d time.Duration) float64 {
+	return float64(d) / float64(time.Millisecond)
 }
 
 func main() {
@@ -81,15 +85,15 @@ func main() {
 	}
 	elapsed := time.Since(start)
 
-	media := somaEspera / (numFilosofos * numCiclos)
+	media := somaEspera / time.Duration(numFilosofos * numCiclos)
 
-	fmt.Printf("---Tempo médio de espera para aquisição dos garfos: %s\n", media)
-	fmt.Printf("---Número máximo de filósofos comendo simultaneamente: %d\n", maxEating)
-	fmt.Printf("---Maior tempo de espera observado: %s\n", longestWait)
+	fmt.Printf("\nTempo total: %.3f ms\n\n", ms(elapsed))
+	fmt.Printf("Espera média: %.6f ms\n", ms(media))
+	fmt.Printf("Maior espera: %.6f ms\n", ms(longestWait))
+	fmt.Printf("Máximo comendo simultaneamente: %d\n", maxEating)
 
-	for i := 0; i < len(ciclesnumFilosofos); i++ {
-		fmt.Printf("---Filósofo %d: %d ciclos\n", i, ciclesnumFilosofos[i])
+	for i := 0; i < len(ciclosConcluidos); i++ {
+		fmt.Printf("---Filósofo %d: %d ciclos\n", i, ciclosConcluidos[i])
 	}
 
-	fmt.Printf("\nSequential Dinner took %s\n\n", elapsed)
 }
