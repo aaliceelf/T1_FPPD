@@ -78,6 +78,10 @@ func filosofo(id int, wg *sync.WaitGroup) {
 	}
 }
 
+func ms(d time.Duration) float64 {
+	return float64(d) / float64(time.Millisecond)
+}
+
 func main() {
 	var wg sync.WaitGroup
 	start := time.Now()
@@ -92,7 +96,7 @@ func main() {
 		fmt.Printf("Filósofo %d: %d ciclos\n", i, ciclosConcluidos[i])
 	}
 
-	fmt.Printf("Tempo: %s\n", elapsed)
+	fmt.Printf("Tempo total: %.2f ms\n", ms(elapsed))
 
 	var total time.Duration
 	var maior time.Duration
@@ -105,8 +109,8 @@ func main() {
 	}
 
 	media := total / time.Duration(numFilosofos*numCiclos)
-	fmt.Printf("Espera média: %s\n", media)
-	fmt.Printf("Maior espera: %s\n", maior)
+	fmt.Printf("Espera média: %.2f ms\n", ms(media))
+	fmt.Printf("Maior espera: %.2f ms\n", ms(maior))
 	fmt.Printf("Máximo comendo simultaneamente: %d\n", maxComendo)
 
 }
